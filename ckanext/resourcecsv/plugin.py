@@ -107,7 +107,8 @@ class ResourceCSVPlugin(p.SingletonPlugin):
         data = urllib2.urlopen(resource.get('url')).readlines()
 
         # write a dummy header row
-        tmpfile.write( self.DELIMITER.join(['Col %d' % (i+1) for i,x in enumerate(coldef)])+"\n" )
+        # tmpfile.write( self.DELIMITER.join(['Col %d' % (i+1) for i,x in enumerate(coldef.append('onemorecol'))])+"\r" )
+        tmpfile.write( self.DELIMITER.join('Col %d' % (i+1) for i in range(0, len(coldef) + 1)) + "\r" )
 
         # replace the defined characters in each line with a delimiter
         for line in data:
@@ -120,6 +121,8 @@ class ResourceCSVPlugin(p.SingletonPlugin):
             if line.startswith('%'):
                 continue # skip
 
+            # line = line.encode('utf-8')
+
             tl = list(line) # explode
 
             # inject the delimiter
@@ -127,6 +130,8 @@ class ResourceCSVPlugin(p.SingletonPlugin):
                 tl[col] = self.DELIMITER
 
             line = "".join(tl) # implode
+
+            log.debug(line)
 
             tmpfile.write(line)
 
